@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "Is_member_00",
+    "database": "postgres",
+    "host": "postgres-db.czas8wcyet1o.us-east-1.rds.amazonaws.com",
+    "dialect": "postgres",
+    "port": "5432"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "Is_member_00",
+    "database": "postgres",
+    "host": "postgres-db.czas8wcyet1o.us-east-1.rds.amazonaws.com",
+    "dialect": "postgres",
+    "port": "5432"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "Is_member_00",
+    "database": "postgres",
+    "host": "postgres-db.czas8wcyet1o.us-east-1.rds.amazonaws.com",
+    "dialect": "postgres",
+    "port": "5432"
+  }
+}

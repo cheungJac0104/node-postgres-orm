@@ -16,9 +16,56 @@ const CommunityPost = sequelize.define('CommunityPost', {
     defaultValue: DataTypes.NOW,
   },
   privacy_mode: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.ENUM('public', 'friends', 'private'),
     allowNull: false,
+    defaultValue: 'public'
   },
+  like_count: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  // Reference to the user who created the post
+  user_id: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: 'User',
+      key: 'user_id'
+    }
+  }
+}, {
+  indexes: [
+    {
+      fields: ['user_id'] // For faster querying by author
+    },
+    {
+      fields: ['created_at'] // For sorting by date
+    }
+  ]
 });
+
+CommunityPost.initializeAssociations = (models) => {
+  CommunityPost.belongsTo(models.User, {
+    foreignKey: 'user_id',
+    as: 'author',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  });
+  
+  CommunityPost.hasMany(models.PostLike, {
+    foreignKey: 'post_id',
+    as: 'likes',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  });
+  
+  CommunityPost.belongsToMany(models.User, {
+    through: models.PostLike,
+    foreignKey: 'post_id',
+    otherKey: 'user_id',
+    as: 'liked_by_users'
+  });
+};
 
 export default CommunityPost;

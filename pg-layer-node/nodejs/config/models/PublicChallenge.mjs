@@ -7,8 +7,8 @@ const PublicChallenge = sequelize.define('PublicChallenge', {
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4,
   },
-  anonymized_user_hash: {
-    type: DataTypes.TEXT,
+  challenge_title: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
   completion_date: {

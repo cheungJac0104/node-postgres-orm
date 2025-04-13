@@ -16,6 +16,7 @@
     "openai": "^4.91.1",
     "pg": "^8.13.3",
     "pg-hstore": "^2.3.4",
+    "pg-layer-node": "file:",
     "pg-types": "^4.0.2",
     "sequelize": "^6.37.5",
     "sequelize-cli": "^6.6.2"

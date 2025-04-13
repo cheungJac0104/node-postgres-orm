@@ -7,14 +7,39 @@ const UserChallenge = sequelize.define('UserChallenge', {
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4,
   },
-  status: {
-    type: DataTypes.STRING(20),
+  user_id: {
+    type: DataTypes.UUID,
     allowNull: false,
+    references: {
+      model: 'User',
+      key: 'user_id'
+    }
   },
-  completion_date: {
+  challenge_date: {
     type: DataTypes.DATEONLY,
-    allowNull: true,
+    allowNull: false,
+    defaultValue: DataTypes.NOW
   },
+  is_completed: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  }
+}, {
+  indexes: [
+    {
+      fields: ['user_id', 'challenge_date'],
+      unique: true // One challenge per user per day
+    }
+  ]
 });
+
+// Simple association setup
+UserChallenge.associate = (models) => {
+  UserChallenge.belongsTo(models.User, {
+    foreignKey: 'user_id',
+    onDelete: 'CASCADE'
+  });
+};
 
 export default UserChallenge;

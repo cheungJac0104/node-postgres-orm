@@ -40,15 +40,13 @@ const PostLike = sequelize.define('PostLike', {
     PostLike.belongsTo(models.CommunityPost, {
       foreignKey: 'post_id',
       as: 'post',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      onDelete: 'CASCADE'
     });
     
     PostLike.belongsTo(models.User, {
       foreignKey: 'user_id',
       as: 'user',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      onDelete: 'CASCADE'
     });
   };
 

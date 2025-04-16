@@ -87,22 +87,19 @@ JournalEntry.initializeAssociations = (models) => {
   JournalEntry.belongsTo(models.PublicChallenge, {
     foreignKey: 'challenge_id',
     as: 'challenge',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE'
+    onDelete: 'SET NULL'
   });
   
   JournalEntry.belongsTo(models.User, {
     foreignKey: 'shared_with_friend_id',
     as: 'shared_with_friend',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE'
+    onDelete: 'SET NULL'
   });
 
   JournalEntry.belongsTo(models.User, {
     foreignKey: 'shared_by_user_id',
     as: 'shared_by_user',
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE'
+    onDelete: 'SET NULL'
   });
 };
 

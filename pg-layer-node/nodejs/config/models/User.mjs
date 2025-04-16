@@ -40,8 +40,7 @@ User.initializeAssociations = (models) => {
   User.hasOne(models.PrivacySetting, {
     foreignKey: 'user_id',
     as: 'privacy_settings',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onDelete: 'CASCADE'
   });
 
   User.hasOne(models.Analytic, { foreignKey: 'user_id' });

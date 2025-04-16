@@ -37,25 +37,13 @@ const Analytic = sequelize.define('Analytic', {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
-  // Computed engagement score
+  // Now stored in database
   engagement_score: {
-    type: DataTypes.VIRTUAL, // Not stored in DB
-    get() {
-      const weights = {
-        userChallenge: 0.05,    // 5%
-        publicChallenge: 0.15,  // 15%
-        postLikes: 0.30,        // 30%
-        invitesSent: 0.20,      // 20%
-        invitesAccepted: 0.30    // 30%
-      };
-      
-      return Math.min(100, 
-        (this.user_challenges_completed * weights.userChallenge) +
-        (this.public_challenges_completed * weights.publicChallenge) +
-        (this.post_likes_received * weights.postLikes) +
-        (this.journal_invites_sent * weights.invitesSent) +
-        (this.journal_invites_accepted * weights.invitesAccepted)
-      );
+    type: DataTypes.FLOAT,
+    defaultValue: 0,
+    validate: {
+      min: 0,
+      max: 100
     }
   },
   last_updated: {
@@ -64,38 +52,69 @@ const Analytic = sequelize.define('Analytic', {
   }
 }, {
   hooks: {
-    beforeUpdate: (analytic) => {
+    beforeSave: async (analytic) => {
+      // Recalculate engagement score before saving
+      analytic.calculateEngagementScore();
       analytic.last_updated = new Date();
-    }
-  },
-  instanceMethods: {
-    async updateEngagementMetrics() {
-      // Count all the relevant metrics
-      const [
-        userChallenges,
-        publicChallenges,
-        postLikes,
-        invitesSent,
-        invitesAccepted
-      ] = await Promise.all([
-        this.getUser().then(user => user.countUserChallenges()),
-        this.getUser().then(user => user.countPublicChallenges()),
-        this.getUser().then(user => user.countPostLikes()),
-        this.getUser().then(user => user.countJournalInvitesSent()),
-        this.getUser().then(user => user.countJournalInvitesAccepted())
-      ]);
-      
-      // Update the metrics
-      this.update({
-        user_challenges_completed: userChallenges,
-        public_challenges_completed: publicChallenges,
-        post_likes_received: postLikes,
-        journal_invites_sent: invitesSent,
-        journal_invites_accepted: invitesAccepted
-      });
+    },
+    beforeUpdate: async (analytic) => {
+      // Also recalculate on update
+      analytic.calculateEngagementScore();
+      analytic.last_updated = new Date();
     }
   }
 });
+
+// Add instance method to calculate score
+Analytic.prototype.calculateEngagementScore = function() {
+  const weights = {
+    userChallenge: 0.05,    // 5%
+    publicChallenge: 0.15,  // 15%
+    postLikes: 0.30,        // 30%
+    invitesSent: 0.20,      // 20%
+    invitesAccepted: 0.30    // 30%
+  };
+  
+  this.engagement_score = Math.min(100, 
+    (this.user_challenges_completed * weights.userChallenge) +
+    (this.public_challenges_completed * weights.publicChallenge) +
+    (this.post_likes_received * weights.postLikes) +
+    (this.journal_invites_sent * weights.invitesSent) +
+    (this.journal_invites_accepted * weights.invitesAccepted)
+  );
+};
+
+// Update method to recalculate metrics
+Analytic.prototype.updateEngagementMetrics = async function() {
+  const user = await this.getUser();
+  
+  const [
+    userChallenges,
+    publicChallenges,
+    postLikes,
+    invitesSent,
+    invitesAccepted
+  ] = await Promise.all([
+    user.countUserChallenges(),
+    user.countPublicChallenges(),
+    user.countPostLikes(),
+    user.countJournalInvitesSent(),
+    user.countJournalInvitesAccepted()
+  ]);
+  
+  // Update the metrics
+  this.user_challenges_completed = userChallenges;
+  this.public_challenges_completed = publicChallenges;
+  this.post_likes_received = postLikes;
+  this.journal_invites_sent = invitesSent;
+  this.journal_invites_accepted = invitesAccepted;
+  
+  // Recalculate the score
+  this.calculateEngagementScore();
+  
+  // Save all changes
+  await this.save();
+};
 
 Analytic.associate = (models) => {
   Analytic.belongsTo(models.User, {

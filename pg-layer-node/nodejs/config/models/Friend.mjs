@@ -59,30 +59,26 @@ Friend.initializeAssociations = (models) => {
   Friend.belongsTo(models.User, {
     foreignKey: 'requester_id',
     as: 'requester',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onDelete: 'CASCADE'
   });
   
   Friend.belongsTo(models.User, {
     foreignKey: 'addressee_id',
     as: 'addressee',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onDelete: 'CASCADE'
   });
   
   // Add associations to User model
   models.User.hasMany(models.Friend, {
     foreignKey: 'requester_id',
     as: 'sent_friend_requests',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onDelete: 'CASCADE'
   });
   
   models.User.hasMany(models.Friend, {
     foreignKey: 'addressee_id',
     as: 'received_friend_requests',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onDelete: 'CASCADE'
   });
   
   // For getting all friends regardless of request direction

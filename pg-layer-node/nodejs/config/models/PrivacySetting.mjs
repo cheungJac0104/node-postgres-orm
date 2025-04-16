@@ -31,8 +31,7 @@ PrivacySetting.initializeAssociations = (models) => {
   PrivacySetting.belongsTo(models.User, {
     foreignKey: 'user_id',
     as: 'user',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onDelete: 'CASCADE'
   });
 };
 

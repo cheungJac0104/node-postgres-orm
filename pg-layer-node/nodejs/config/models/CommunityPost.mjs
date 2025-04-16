@@ -49,15 +49,13 @@ CommunityPost.initializeAssociations = (models) => {
   CommunityPost.belongsTo(models.User, {
     foreignKey: 'user_id',
     as: 'author',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onDelete: 'CASCADE'
   });
   
   CommunityPost.hasMany(models.PostLike, {
     foreignKey: 'post_id',
     as: 'likes',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onDelete: 'CASCADE'
   });
   
   CommunityPost.belongsToMany(models.User, {

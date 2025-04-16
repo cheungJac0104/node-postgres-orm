@@ -41,15 +41,13 @@ UserPublicChallenge.initializeAssociations = (models) => {
     UserPublicChallenge.belongsTo(models.User, {
       foreignKey: 'user_id',
       as: 'user',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      onDelete: 'CASCADE'
     });
     
     UserPublicChallenge.belongsTo(models.PublicChallenge, {
       foreignKey: 'public_id',
       as: 'public_challenge',
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
+      onDelete: 'CASCADE'
     });
   };
   
